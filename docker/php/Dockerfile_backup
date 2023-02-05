@@ -1,0 +1,29 @@
+FROM php:8.0-fpm
+SHELL ["/bin/bash", "-c"]
+RUN  apt update
+RUN apt install git -y
+RUN apt install nano -y
+RUN apt install unzip -y
+RUN apt install libzip-dev -y
+RUN apt install libmcrypt-dev -y
+RUN pecl install mcrypt-1.0.4 
+RUN docker-php-ext-enable mcrypt
+RUN docker-php-ext-install \pdo_mysql
+ENV docker-php-ext-configure zip --with-libzip
+RUN docker-php-ext-install \zip
+#RUN docker-php-ext-install \mcrypt 
+RUN cd /usr/local/bin
+RUN curl -sS https://getcomposer.org/installer | php -- \
+--install-dir=/usr/bin --filename=composer.phar
+RUN mv /usr/bin/composer.phar /usr/local/bin/composer
+ENV COMPOSER_ALLOW_SUPERUSER 1
+RUN composer config -g allow-plugins.kylekatarnls/update-helper true
+RUN composer create-project laravel/laravel /var/www/inventory 4.2.* --prefer-dist
+ENV PATH=$PATH:$HOME:~/.composer/vendor/bin
+#RUN composer global require "laravel/installer=~1.1"
+#RUN cd /var/www/
+#RUN laravel new test
+#RUN source ~/.bashrc
+#RUN echo $PATH
+#RUN composer create-project laravel/laravel /var/www/inventory 4.2 --prefer-dist  --no-install
+#RUN composer install

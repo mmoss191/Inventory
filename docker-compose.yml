@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  php:
+    working_dir: /var/www/inventory
+    container_name: php
+    build: 
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    ports: 
+      - "9001:9000"
+    networks:
+      - myNetwork
+    volumes: 
+      - ./:/var/www/inventory
+    #command: 
+      # - cd /var/www/ 
+      # - exec composer create-project laravel/laravel test1234
+      #- ./temp:/var/www/temp
+networks:
+  myNetwork:
+    external: true
+
+    
